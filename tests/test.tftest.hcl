@@ -70,16 +70,16 @@ run "bastion_host_validation" {
 run "output_validation" {
   assert {
     condition     = output.virtual_network_id == azurerm_virtual_network.main.id
-    error_message = "incorrect output for virtual network ID"
+    error_message = "incorrect output for virtual network ID, should match resource ID"
   }
 
   assert {
     condition     = output.public_subnet_id == azurerm_subnet.public.id
-    error_message = "incorrect output for public subnet ID"
+    error_message = "incorrect output for public subnet ID, should match resource ID"
   }
 
   assert {
     condition     = output.private_subnet_id == azurerm_subnet.private.id
-    error_message = "incorrect output for private subnet ID"
+    error_message = "incorrect output for private subnet ID, should match resource ID"
   }
 }
