@@ -79,6 +79,12 @@ variable "bastion_name" {
   default     = "myBastionHost"
 }
 
+variable "bastion_address_prefix" {
+  description = "The address prefix of the Azure Bastion Host."
+  type        = string
+  default     = "10.0.3.0/27"
+}
+
 # Resources
 resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
@@ -135,7 +141,7 @@ resource "azurerm_subnet" "bastion" {
   name                 = "AzureBastionSubnet"
   resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.3.0/27"]
+  address_prefixes     = [var.bastion_address_prefix]
 }
 
 resource "azurerm_public_ip" "bastion" {
