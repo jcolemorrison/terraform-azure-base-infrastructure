@@ -13,6 +13,7 @@ provider "azurerm" {
   features {}
 }
 
+# Variables
 variable "resource_group_name" {
   description = "The name of the resource group in which to create the Azure resources."
   type        = string
@@ -72,7 +73,13 @@ variable "nat_gateway_name" {
   default     = "myNATGateway"
 }
 
-# Create a resource group
+variable "bastion_name" {
+  description = "The name of the Azure Bastion Host."
+  type        = string
+  default     = "myBastionHost"
+}
+
+# Resources
 resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
   location = var.resource_group_location
@@ -124,6 +131,34 @@ resource "azurerm_subnet_nat_gateway_association" "public" {
   nat_gateway_id = azurerm_nat_gateway.main.id
 }
 
+resource "azurerm_subnet" "bastion" {
+  name                 = "AzureBastionSubnet"
+  resource_group_name  = azurerm_resource_group.main.name
+  virtual_network_name = azurerm_virtual_network.main.name
+  address_prefixes     = ["10.0.3.0/27"]
+}
+
+resource "azurerm_public_ip" "bastion" {
+  name                = "myBastionPublicIP"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+resource "azurerm_bastion_host" "main" {
+  name                = var.bastion_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  ip_configuration {
+    name                 = "configuration"
+    subnet_id            = azurerm_subnet.bastion.id
+    public_ip_address_id = azurerm_public_ip.bastion.id
+  }
+}
+
+# Outputs
 output "virtual_network_id" {
   description = "The ID of the virtual network."
   value       = azurerm_virtual_network.main.id
