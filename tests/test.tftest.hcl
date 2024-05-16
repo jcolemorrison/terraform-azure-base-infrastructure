@@ -5,7 +5,7 @@ run "resource_group_validation" {
   }
 
   assert {
-    condition     = azurerm_resource_group.main.location == "East US"
+    condition     = azurerm_resource_group.main.location == "eastus"
     error_message = "incorrect resource group location"
   }
 }
@@ -17,7 +17,7 @@ run "virtual_network_validation" {
   }
 
   assert {
-    condition     = azurerm_virtual_network.main.address_space == ["10.255.0.0/16"]
+    condition     = azurerm_virtual_network.main.address_space.0 == "10.255.0.0/16"
     error_message = "incorrect virtual network address space"
   }
 }
@@ -29,7 +29,7 @@ run "public_subnet_validation" {
   }
 
   assert {
-    condition     = azurerm_subnet.public.address_prefixes == ["10.255.1.0/24"]
+    condition     = azurerm_subnet.public.address_prefixes.0 == "10.255.1.0/24"
     error_message = "incorrect public subnet address"
   }
 }
@@ -41,7 +41,7 @@ run "private_subnet_validation" {
   }
 
   assert {
-    condition     = azurerm_subnet.private.address_prefixes == ["10.255.2.0/24"]
+    condition     = azurerm_subnet.private.address_prefixes.0 == "10.255.2.0/24"
     error_message = "incorrect private subnet address"
   }
 }
